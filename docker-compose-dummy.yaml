@@ -1,0 +1,123 @@
+# This is the copy of the original docker-compose file that is used in the project
+# except it contains dummy values for sensitive information.
+
+# Rename it as docker-compose.yaml and change the sensitive information to your own.
+
+version: '3.9'
+
+services:
+  redis-output-cache:
+    image: redis:latest
+    ports:
+      - "6000:6379"
+    networks:
+      - personalBlogBackend-Network
+
+  redis-inner-cache:
+    image: redis:latest
+    ports:
+      - "6001:6379"
+    networks:
+      - personalBlogBackend-Network
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "8001:8001"
+    networks:
+      - personalBlogBackend-Network
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5400:5432"
+    environment:
+      POSTGRES_USER: xxx
+      POSTGRES_PASSWORD: xxx
+      POSTGRES_DB: personalBlog
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - personalBlogBackend-Network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: xxx@xxx.com
+      PGADMIN_DEFAULT_PASSWORD: xxx
+    networks:
+      - personalBlogBackend-Network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - personalBlogBackend-Network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.6.2
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "9201:5601"
+    networks:
+      - personalBlogBackend-Network
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5340:80"
+      - "5341:5341"
+    volumes:
+      - seq-logs:/data
+    networks:
+      - personalBlogBackend-Network
+
+  personalblog-webapi:
+    build:
+      context: ./PersonalBlogAPI/
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ConnectionStrings:RedisOutputCache=redis-output-cache:6379
+      - ConnectionStrings:RedisInnerCache=redis-inner-cache:6379
+      - ConnectionStrings:PersonalBlogDb=Host=personalBlog-postgres;Port=5400;Database=personalBlog;Username=xxx;Password=xxx
+      - HashIdService:Seed=xxx
+      - HashIdService:MinGeneratedLength=12
+    depends_on:
+      - redis-output-cache
+      - redis-inner-cache
+      - postgres
+    networks:
+      - personalBlogBackend-Network
+
+volumes:
+  postgres-data:
+  elasticsearch-data:
+  seq-logs:
+
+
+networks:
+  personalBlogBackend-Network:
