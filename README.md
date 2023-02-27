@@ -6,7 +6,7 @@ This is an open-source project for a .NET Core Personal Blog Backend. It contain
 
 - Docker Compose file
 - Entity Framework
-- MedaitR
+- MediatR
 - Mapster
 - Fluent Validation
 - HashIds - generate Youtube urls like ids
