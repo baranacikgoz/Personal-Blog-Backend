@@ -21,6 +21,7 @@ This is an open-source project for a .NET Core Personal Blog Backend. It contain
 
 - Authentication and Authorization
 - Redis implementation
+- CI/CD
 - API versioning
 - Unit and Integration tests
 - Rate Limiting
