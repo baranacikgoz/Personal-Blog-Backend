@@ -19,15 +19,15 @@ public class AddExistingTagToArticleCommandValidator : AbstractValidator<AddExis
     {
         RuleFor(request => request.ArticleId)
             .NotEmpty()
-            .WithMessage("ArticleId is required.")
+            .WithMessage("{PropertyName} is required.")
             .MustAsync(async (id, cancellationToken) => await articleRepository.ExistsAsync(hashIdService.Decode(id), cancellationToken))
-            .WithMessage("Article with the provided id does not exist.");
+            .WithMessage("{PropertyName} does not exist.");
 
         RuleFor(request => request.TagId)
             .NotEmpty()
-            .WithMessage("TagId is required.")
+            .WithMessage("{PropertyName} is required.")
             .MustAsync(async (id, cancellationToken) => await tagRepository.ExistsAsync(hashIdService.Decode(id), cancellationToken))
-            .WithMessage("Tag with the provided id does not exist.");
+            .WithMessage("{PropertyName} does not exist.");
     }
 }
 

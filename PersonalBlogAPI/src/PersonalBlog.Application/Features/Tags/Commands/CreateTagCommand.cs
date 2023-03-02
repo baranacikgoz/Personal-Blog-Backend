@@ -16,11 +16,11 @@ public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
     {
         RuleFor(request => request.Name)
             .NotEmpty()
-            .WithMessage($"{nameof(Tag.Name)} is required.")
+            .WithMessage("{PropertyName} is required.")
             .MaximumLength(Tag.NameMaxLength)
-            .WithMessage($"{nameof(Tag.Name)} must be {Tag.NameMaxLength} characters or less.")
+            .WithMessage("{PropertyName} must be {MaxLength} characters or less.")
             .MustAsync(async (name, cancellationToken) => !await tagRepository.ValueForThatFieldExistsAsync(name, nameof(Tag.Name), cancellationToken))
-            .WithMessage($"{nameof(Tag.Name)} already exists.");
+            .WithMessage("{PropertyName} already exists.");
     }
 }
 

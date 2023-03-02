@@ -88,7 +88,7 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
                     break;
 
                 default:
-                    var displayedErrorMessage = 
+                    var displayedErrorMessage =
                         _env.IsProduction() ? "An internal server error has occured."
                         : exception.Message;
 
@@ -107,7 +107,7 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
         }
     }
 
-    private void LogResponse(HttpContext context, long elapsedMilliseconds)
+    private static void LogResponse(HttpContext context, long elapsedMilliseconds)
     {
         if (elapsedMilliseconds > 2000)
         {
@@ -118,7 +118,7 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
         Log.Information("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms", context.Request.Method, context.Request.Path, context.Response.StatusCode, elapsedMilliseconds);
     }
 
-    private void LogErrorWithRequestInfo(HttpContext context, string requestBodyOrQueryString, long elapsedMilliseconds)
+    private static void LogErrorWithRequestInfo(HttpContext context, string requestBodyOrQueryString, long elapsedMilliseconds)
     {
         Log.Error("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms for {RequestBodyOrQueryString}", context.Request.Method, context.Request.Path, context.Response.StatusCode, elapsedMilliseconds, requestBodyOrQueryString);
     }

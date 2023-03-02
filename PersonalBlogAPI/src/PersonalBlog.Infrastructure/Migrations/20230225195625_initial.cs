@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -7,12 +6,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PersonalBlog.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "Articles",
                 columns: table => new
                 {
@@ -28,12 +27,9 @@ namespace PersonalBlog.Infrastructure.Migrations
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeletedBy = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Articles", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Articles", x => x.Id));
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -48,12 +44,9 @@ namespace PersonalBlog.Infrastructure.Migrations
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeletedBy = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Tags", x => x.Id));
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "ArticleTags",
                 columns: table => new
                 {
@@ -70,14 +63,14 @@ namespace PersonalBlog.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArticleTags", x => new { x.ArticleId, x.TagId });
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("PK_ArticleTags", x => new { x.ArticleId, x.TagId });
+                    _ = table.ForeignKey(
                         name: "FK_ArticleTags_Articles_ArticleId",
                         column: x => x.ArticleId,
                         principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
+                    _ = table.ForeignKey(
                         name: "FK_ArticleTags_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
@@ -85,7 +78,7 @@ namespace PersonalBlog.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_ArticleTags_TagId",
                 table: "ArticleTags",
                 column: "TagId");
@@ -94,13 +87,13 @@ namespace PersonalBlog.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "ArticleTags");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "Articles");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "Tags");
         }
     }

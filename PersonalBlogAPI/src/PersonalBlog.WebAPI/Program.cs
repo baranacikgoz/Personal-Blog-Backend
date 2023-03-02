@@ -3,7 +3,7 @@ using PersonalBlog.Infrastructure;
 using PersonalBlog.WebAPI;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
     //.AddJsonFile("appsettings.json", optional: falstre, reloadOnChange: true)
@@ -16,29 +16,29 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-    builder.Host.UseSerilog(Log.Logger);
+    _ = builder.Host.UseSerilog(Log.Logger);
 
     Log.Information("Starting web host.");
 
-    builder.Services
+    _ = builder.Services
         .AddApplication()
         .AddInfrastructure(builder.Configuration)
         .AddCustomSwaggerGen()
         .AddRedisOutputCaching(builder.Configuration);
 
-    builder.Services
+    _ = builder.Services
         .AddControllers()
         .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
-    var app = builder.Build();
+    WebApplication app = builder.Build();
 
-    app.UseExceptionHandlingAndResponseLoggingMiddleware()
+    _ = app.UseExceptionHandlingAndResponseLoggingMiddleware()
        .UseOutputCache()
        .AddMapsterConfigs()
        .UseSwagger()
        .UseSwaggerUI();
 
-    app.MapControllers();
+    _ = app.MapControllers();
 
     app.Run();
 }

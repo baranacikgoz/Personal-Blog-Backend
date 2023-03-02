@@ -1,50 +1,55 @@
-﻿namespace PersonalBlog.WebAPI;
-
+﻿
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-public static class SwaggerExtensions
+namespace PersonalBlog.WebAPI
 {
-    public static IServiceCollection AddCustomSwaggerGen(this IServiceCollection services)
+    public static class SwaggerExtensions
     {
-        //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        //services.AddEndpointsApiExplorer();
-
-        services
-        .AddSwaggerGen(options =>
+        public static IServiceCollection AddCustomSwaggerGen(this IServiceCollection services)
         {
-            options.OperationFilter<OperationIdFilter>();
+            //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            //services.AddEndpointsApiExplorer();
 
-            options.SwaggerDoc(
-                "v1",
-                new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "PersonalBlog.WebAPI",
-                    Description = "Personal Blog Web API",
-                    Contact = new OpenApiContact
+            _ = services
+            .AddSwaggerGen(options =>
+            {
+                options.OperationFilter<OperationIdFilter>();
+
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
                     {
-                        Name = "Baran Açıkgöz",
-                        Email = "baran-acikgoz@outlook.com",
+                        Version = "v1",
+                        Title = "PersonalBlog.WebAPI",
+                        Description = "Personal Blog Web API",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Baran Açıkgöz",
+                            Email = "baran-acikgoz@outlook.com",
+                        }
                     }
-                }
-                );
+                    );
 
-            //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            //{
-            //    Description = "JWT Authorization header using the Bearer scheme",
-            //    Name = "Authorization",
-            //    In = ParameterLocation.Header,
-            //    Type = SecuritySchemeType.ApiKey,
-            //    Scheme = "Bearer"
-            //});
-        });
+                //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                //{
+                //    Description = "JWT Authorization header using the Bearer scheme",
+                //    Name = "Authorization",
+                //    In = ParameterLocation.Header,
+                //    Type = SecuritySchemeType.ApiKey,
+                //    Scheme = "Bearer"
+                //});
+            });
 
-        return services;
+            return services;
+        }
     }
-}
 
-internal class OperationIdFilter : IOperationFilter
-{
-    public void Apply(OpenApiOperation operation, OperationFilterContext context) => operation.OperationId = context.MethodInfo.Name;
+    internal class OperationIdFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            operation.OperationId = context.MethodInfo.Name;
+        }
+    }
 }

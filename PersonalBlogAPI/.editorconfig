@@ -1,4 +1,6 @@
-﻿[*.cs]
+﻿[*.{cs,vb}]
 
-# RCS1194: Implement exception constructors.
-dotnet_diagnostic.RCS1194.severity = suggestion
+dotnet_diagnostic.IDE0059.severity = none
+dotnet_style_discard_out_variables = false
+
+dotnet_diagnostic.RCS1194.severity = none

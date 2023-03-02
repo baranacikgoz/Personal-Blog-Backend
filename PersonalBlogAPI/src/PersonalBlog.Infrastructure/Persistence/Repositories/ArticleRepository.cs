@@ -1,42 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PersonalBlog.Application.Caching;
-using PersonalBlog.Application.Exceptions;
 using PersonalBlog.Application.Interfaces.Repository.ReadRepositories;
 using PersonalBlog.Domain.Entities;
 using PersonalBlog.Infrastructure.Persistence.Context;
+using PersonalBlog.Infrastructure.Persistence.Repositories.Common;
 
-namespace PersonalBlog.Infrastructure.Persistence.Repositories;
-
-public class ArticleRepository : GenericRepository<Article>, IArticleRepository
+namespace PersonalBlog.Infrastructure.Persistence.Repositories
 {
-    private readonly ApplicationDbContext _context;
-
-    public ArticleRepository(ApplicationDbContext context) : base(context)
+    public class ArticleRepository : GenericRepository<Article>, IArticleRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task<Article> AddExistingTagToArticle(Article article, Tag tag, CancellationToken cancellationToken)
-    {
-        var articleTag = new ArticleTag
+        public ArticleRepository(ApplicationDbContext context) : base(context)
         {
-            ArticleId = article.Id,
-            TagId = tag.Id
-        };
+            _context = context;
+        }
 
-        article.ArticleTags.Add(articleTag);
-        tag.ArticleTags.Add(articleTag);
+        public async Task<Article> AddExistingTagToArticle(Article article, Tag tag, CancellationToken cancellationToken)
+        {
+            ArticleTag articleTag = new()
+            {
+                ArticleId = article.Id,
+                TagId = tag.Id
+            };
 
-        await _context.SaveChangesAsync(cancellationToken);
+            article.ArticleTags.Add(articleTag);
+            tag.ArticleTags.Add(articleTag);
 
-        return article;
-    }
+            _ = await _context.SaveChangesAsync(cancellationToken);
 
-    public async Task<Article?> GetByIdIncludeArticleTags(int id, CancellationToken cancellationToken)
-    {
-        return await _context.Articles
-            .Include(a => a.ArticleTags)
-            .ThenInclude(at=>at.Tag)
-            .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+            return article;
+        }
+
+        public async Task<Article?> GetByIdIncludeArticleTags(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Articles
+                .Include(a => a.ArticleTags)
+                .ThenInclude(at => at.Tag)
+                .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+        }
     }
 }

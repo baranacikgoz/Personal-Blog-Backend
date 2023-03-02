@@ -4,22 +4,28 @@ using PersonalBlog.Application.Features.Abstractions;
 using PersonalBlog.Application.Interfaces.Repository.ReadRepositories;
 using PersonalBlog.Application.Wrappers;
 
-namespace PersonalBlog.Application.Features.Articles.Queries;
-
-public sealed record GetAllArticlesQuery() : IQuery<BaseResponse<IReadOnlyCollection<ArticleDto>>>;
-
-internal sealed class GetAllArticlesQueryHandler : IQueryHandler<GetAllArticlesQuery, BaseResponse<IReadOnlyCollection<ArticleDto>>>
+namespace PersonalBlog.Application.Features.Articles.Queries
 {
-    private readonly IArticleRepository _articleRepository;
+    public sealed record GetAllArticlesQuery() : IQuery<BaseResponse<IReadOnlyCollection<ArticleDto>>>;
 
-    public GetAllArticlesQueryHandler(IArticleRepository articleRepository) => (_articleRepository) = (articleRepository);
-
-    public async Task<BaseResponse<IReadOnlyCollection<ArticleDto>>> Handle(GetAllArticlesQuery request, CancellationToken cancellationToken)
+    internal sealed class GetAllArticlesQueryHandler : IQueryHandler<GetAllArticlesQuery, BaseResponse<IReadOnlyCollection<ArticleDto>>>
     {
-        var articles = await _articleRepository.GetAllAsync(cancellationToken);
+        private readonly IArticleRepository _articleRepository;
 
-        var dto = articles.Adapt<IReadOnlyCollection<ArticleDto>>();
+        public GetAllArticlesQueryHandler(
+            IArticleRepository articleRepository
+            )
+        {
+            _articleRepository = articleRepository;
+        }
 
-        return BaseResponse<IReadOnlyCollection<ArticleDto>>.FromSuccess(dto);
+        public async Task<BaseResponse<IReadOnlyCollection<ArticleDto>>> Handle(GetAllArticlesQuery request, CancellationToken cancellationToken)
+        {
+            IReadOnlyCollection<Domain.Entities.Article> articles = await _articleRepository.GetAllAsync(cancellationToken);
+
+            IReadOnlyCollection<ArticleDto> dto = articles.Adapt<IReadOnlyCollection<ArticleDto>>();
+
+            return BaseResponse<IReadOnlyCollection<ArticleDto>>.FromSuccess(dto);
+        }
     }
 }

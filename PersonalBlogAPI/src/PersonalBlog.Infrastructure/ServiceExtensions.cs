@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using PersonalBlog.Application.Caching;
 using PersonalBlog.Application.Interfaces;
 using PersonalBlog.Application.Interfaces.Repository;
@@ -12,62 +10,60 @@ using PersonalBlog.Infrastructure.Caching;
 using PersonalBlog.Infrastructure.Middlewares;
 using PersonalBlog.Infrastructure.Persistence.Context;
 using PersonalBlog.Infrastructure.Persistence.Repositories;
-using PersonalBlog.Infrastructure.Persistence.Repositories.ReadRepositories;
 using PersonalBlog.Infrastructure.Shared;
 using Serilog;
-using StackExchange.Redis;
-using System.Reflection;
 
-namespace PersonalBlog.Infrastructure;
-
-public static class ServiceExtensions
+namespace PersonalBlog.Infrastructure
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static class ServiceExtensions
     {
-        Log.Information("Adding infrastructure services.");
-
-        var connectionString = configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb");
-
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString)
-            );
-
-        services.AddStackExchangeRedisCache((options =>
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            options.Configuration = configuration.GetValue<string>("ConnectionStrings:RedisInnerCache");
-            options.InstanceName = "PersonalBlog_";
-        }));
+            Log.Information("Adding infrastructure services.");
 
-        services.AddTransient<IHashIdService, HashIdService>();
+            string? connectionString = configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb");
 
-        services.AddSingleton<IRepositoryCacheService, RepositoryCacheService>();
+            _ = services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(connectionString)
+                );
 
-        services.MigrateDatabase();
+            _ = services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetValue<string>("ConnectionStrings:RedisInnerCache");
+                options.InstanceName = "PersonalBlog_";
+            });
 
-        services.AddScoped<IArticleRepository, ArticleRepository>();
-        services.AddScoped<ITagRepository, TagRepository>();
+            _ = services.AddTransient<IHashIdService, HashIdService>();
 
-        Log.Information("Done adding infrastructure services.");
-        return services;
-    }
+            _ = services.AddSingleton<IRepositoryCacheService, RepositoryCacheService>();
 
-    public static IApplicationBuilder UseExceptionHandlingAndResponseLoggingMiddleware(this IApplicationBuilder app)
-    {
-        app.UseMiddleware<ExceptionHandlingAndResponseLoggingMiddleware>();
+            _ = services.MigrateDatabase();
 
-        return app;
-    }
+            _ = services.AddScoped<IArticleRepository, ArticleRepository>();
+            _ = services.AddScoped<ITagRepository, TagRepository>();
 
-    internal static IServiceCollection MigrateDatabase(this IServiceCollection services)
-    {
-        Log.Information("Migrating PostgreSQL database.");
+            Log.Information("Done adding infrastructure services.");
+            return services;
+        }
 
-        using var serviceScope = services.BuildServiceProvider().CreateScope();
-        using var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        public static IApplicationBuilder UseExceptionHandlingAndResponseLoggingMiddleware(this IApplicationBuilder app)
+        {
+            _ = app.UseMiddleware<ExceptionHandlingAndResponseLoggingMiddleware>();
 
-        context.Database.Migrate();
+            return app;
+        }
 
-        Log.Information("Done database migration.");
-        return services;
+        internal static IServiceCollection MigrateDatabase(this IServiceCollection services)
+        {
+            Log.Information("Migrating PostgreSQL database.");
+
+            using IServiceScope serviceScope = services.BuildServiceProvider().CreateScope();
+            using ApplicationDbContext context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            context.Database.Migrate();
+
+            Log.Information("Done database migration.");
+            return services;
+        }
     }
 }

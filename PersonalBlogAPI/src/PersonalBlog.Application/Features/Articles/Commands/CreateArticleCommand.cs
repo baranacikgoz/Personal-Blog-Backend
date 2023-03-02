@@ -16,17 +16,17 @@ public class CreateArticleCommandValidator : AbstractValidator<CreateArticleComm
     {
         RuleFor(request => request.Title)
             .NotEmpty()
-            .WithMessage($"{nameof(Article.Title)} is required.")
+            .WithMessage("{PropertyName} is required.")
             .MaximumLength(Article.TitleMaxLength)
-            .WithMessage($"{nameof(Article.Title)} must be {Article.TitleMaxLength} characters or less.")
+            .WithMessage("{PropertyName} must be at most {MaxLength} characters.")
             .MustAsync(async (title, cancellationToken) => !await articleRepository.ValueForThatFieldExistsAsync(title, nameof(Article.Title), cancellationToken))
-            .WithMessage($"{nameof(Article.Title)} already exists.");
+            .WithMessage("{PropertyName} already exists.");
 
         RuleFor(request => request.Content)
             .NotEmpty()
-            .WithMessage($"{nameof(Article.Content)} is required")
-            .MaximumLength(500)
-            .WithMessage($"{nameof(Article.Content)} must be {Article.ContentMaxLength} characters or less.");
+            .WithMessage("{PropertyName} is required")
+            .MaximumLength(Article.ContentMaxLength)
+            .WithMessage("{PropertyName} must be at most {MaxLength} characters.");
     }
 }
 
