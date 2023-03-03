@@ -8,7 +8,7 @@ using PersonalBlog.Infrastructure.Persistence.Context;
 
 #nullable disable
 
-namespace PersonalBlog.Infrastructure.Migrations
+namespace PersonalBlog.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -47,6 +47,10 @@ namespace PersonalBlog.Infrastructure.Migrations
 
                     b.Property<int>("DeletedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("HashId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -88,6 +92,10 @@ namespace PersonalBlog.Infrastructure.Migrations
                     b.Property<int>("DeletedBy")
                         .HasColumnType("integer");
 
+                    b.Property<string>("HashId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
@@ -126,6 +134,10 @@ namespace PersonalBlog.Infrastructure.Migrations
 
                     b.Property<int>("DeletedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("HashId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");

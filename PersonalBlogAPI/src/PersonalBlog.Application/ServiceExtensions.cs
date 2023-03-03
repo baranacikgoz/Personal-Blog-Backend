@@ -31,9 +31,7 @@ namespace PersonalBlog.Application
         {
             IHashIdService hashIdService = app.ApplicationServices.GetRequiredService<IHashIdService>();
 
-            MapsterProfile mapsterProfile = new(hashIdService);
-
-            mapsterProfile.AddConfigs();
+            MapsterProfile.AddConfigs();
 
             return app;
         }

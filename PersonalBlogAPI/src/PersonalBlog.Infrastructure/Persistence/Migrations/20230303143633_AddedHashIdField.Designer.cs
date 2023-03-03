@@ -9,11 +9,11 @@ using PersonalBlog.Infrastructure.Persistence.Context;
 
 #nullable disable
 
-namespace PersonalBlog.Infrastructure.Migrations
+namespace PersonalBlog.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230225195625_initial")]
-    partial class Initial
+    [Migration("20230303143633_AddedHashIdField")]
+    partial class AddedHashIdField
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,10 @@ namespace PersonalBlog.Infrastructure.Migrations
 
                     b.Property<int>("DeletedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("HashId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -91,6 +95,10 @@ namespace PersonalBlog.Infrastructure.Migrations
                     b.Property<int>("DeletedBy")
                         .HasColumnType("integer");
 
+                    b.Property<string>("HashId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
@@ -129,6 +137,10 @@ namespace PersonalBlog.Infrastructure.Migrations
 
                     b.Property<int>("DeletedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("HashId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");

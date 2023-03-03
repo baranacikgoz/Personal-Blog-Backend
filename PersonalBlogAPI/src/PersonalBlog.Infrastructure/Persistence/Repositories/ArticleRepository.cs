@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PersonalBlog.Application.Interfaces;
 using PersonalBlog.Application.Interfaces.Repository.ReadRepositories;
 using PersonalBlog.Domain.Entities;
 using PersonalBlog.Infrastructure.Persistence.Context;
@@ -10,7 +11,7 @@ namespace PersonalBlog.Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public ArticleRepository(ApplicationDbContext context) : base(context)
+        public ArticleRepository(ApplicationDbContext context, IHashIdService hashIdService) : base(context, hashIdService)
         {
             _context = context;
         }

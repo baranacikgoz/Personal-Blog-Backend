@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PersonalBlog.Domain.Common;
 using PersonalBlog.Domain.Entities;
 
@@ -6,13 +7,22 @@ namespace PersonalBlog.Infrastructure.Persistence.Context
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        private readonly IConfiguration _configuration;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration) : base(options)
         {
+            _configuration = configuration;
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql(_configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb"));
+            base.OnConfiguring(optionsBuilder);
+        }
         public DbSet<Article> Articles => Set<Article>();
         public DbSet<Tag> Tags => Set<Tag>();
         public DbSet<ArticleTag> ArticleTags => Set<ArticleTag>();
+
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -54,7 +64,6 @@ namespace PersonalBlog.Infrastructure.Persistence.Context
             base.OnModelCreating(modelBuilder);
 
             #region Article & Tag Many-to-Many Relationship
-
             _ = modelBuilder.Entity<ArticleTag>()
                 .HasOne(at => at.Article)
                 .WithMany(a => a.ArticleTags)
@@ -67,8 +76,17 @@ namespace PersonalBlog.Infrastructure.Persistence.Context
 
             _ = modelBuilder.Entity<ArticleTag>()
                 .HasKey(at => new { at.ArticleId, at.TagId });
-
             #endregion Article & Tag Many-to-Many Relationship
+
+            // #region Add Unique Indexes
+            // _ = modelBuilder.Entity<Article>()
+            //     .HasIndex(a => a.Title)
+            //     .IsUnique();
+
+            // _ = modelBuilder.Entity<Tag>()
+            //     .HasIndex(t => t.Name)
+            //     .IsUnique();
+            // #endregion Add Unique Indexes
         }
     }
 }

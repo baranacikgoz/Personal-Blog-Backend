@@ -1,0 +1,1 @@
+dotnet ef migrations add <NameOfMigration> --startup-project .\src.\PersonalBlog.WebAPI\ --project \src.\PersonalBlog.Infrastructure\ --context ApplicationDbContext -o Persistence\Migrations\ --verbose
