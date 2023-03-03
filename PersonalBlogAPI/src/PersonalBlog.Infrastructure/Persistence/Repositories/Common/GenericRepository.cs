@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonalBlog.Application.Interfaces;
 using PersonalBlog.Application.Interfaces.Repository.Common;
-using PersonalBlog.Domain.Common;
+using PersonalBlog.Domain.Abstractions;
 using PersonalBlog.Infrastructure.Persistence.Context;
 
 namespace PersonalBlog.Infrastructure.Persistence.Repositories.Common

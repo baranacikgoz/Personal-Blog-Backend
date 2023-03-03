@@ -1,4 +1,6 @@
-﻿namespace PersonalBlog.Domain.Common
+﻿using PersonalBlog.Domain.Abstractions;
+
+namespace PersonalBlog.Domain.Common
 {
     public abstract class AuditableBaseEntity : BaseEntity
     {

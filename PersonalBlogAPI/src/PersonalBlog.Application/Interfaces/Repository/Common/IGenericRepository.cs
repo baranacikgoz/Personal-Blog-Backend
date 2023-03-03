@@ -1,4 +1,4 @@
-﻿using PersonalBlog.Domain.Common;
+﻿using PersonalBlog.Domain.Abstractions;
 
 namespace PersonalBlog.Application.Interfaces.Repository.Common
 {
