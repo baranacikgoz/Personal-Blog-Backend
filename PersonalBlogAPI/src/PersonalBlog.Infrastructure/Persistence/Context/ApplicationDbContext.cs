@@ -78,15 +78,15 @@ namespace PersonalBlog.Infrastructure.Persistence.Context
                 .HasKey(at => new { at.ArticleId, at.TagId });
             #endregion Article & Tag Many-to-Many Relationship
 
-            // #region Add Unique Indexes
-            // _ = modelBuilder.Entity<Article>()
-            //     .HasIndex(a => a.Title)
-            //     .IsUnique();
+            #region Add Unique Indexes
+            _ = modelBuilder.Entity<Article>()
+                .HasIndex(a => a.Title)
+                .IsUnique();
 
-            // _ = modelBuilder.Entity<Tag>()
-            //     .HasIndex(t => t.Name)
-            //     .IsUnique();
-            // #endregion Add Unique Indexes
+            _ = modelBuilder.Entity<Tag>()
+                .HasIndex(t => t.Name)
+                .IsUnique();
+            #endregion Add Unique Indexes
         }
     }
 }
