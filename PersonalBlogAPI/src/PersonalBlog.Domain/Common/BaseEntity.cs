@@ -1,6 +1,8 @@
-﻿namespace PersonalBlog.Domain.Abstractions;
-
-public abstract class BaseEntity
+﻿namespace PersonalBlog.Domain.Common
 {
-    public int Id { get; set; }
+    public abstract class BaseEntity
+    {
+        public int Id { get; set; }
+        public string HashId { get; set; } = null!;
+    }
 }

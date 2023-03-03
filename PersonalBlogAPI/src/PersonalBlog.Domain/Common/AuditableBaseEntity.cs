@@ -1,20 +1,21 @@
-﻿namespace PersonalBlog.Domain.Abstractions;
-
-public abstract class AuditableBaseEntity : BaseEntity
+﻿namespace PersonalBlog.Domain.Common
 {
-    public virtual DateTime CreatedAt { get; set; }
-    public virtual int CreatedBy { get; set; }
-    public virtual DateTime LastModifiedAt { get; set; }
-    public virtual int LastModifiedBy { get; set; }
-
-    public bool IsDeleted { get; set; }
-    public virtual DateTime DeletedAt { get; set; }
-    public virtual int DeletedBy { get; set; }
-
-    protected AuditableBaseEntity()
+    public abstract class AuditableBaseEntity : BaseEntity
     {
-        CreatedAt = DateTime.UtcNow;
-        LastModifiedAt = DateTime.UtcNow;
-        IsDeleted = false;
+        public virtual DateTime CreatedAt { get; set; }
+        public virtual int CreatedBy { get; set; }
+        public virtual DateTime LastModifiedAt { get; set; }
+        public virtual int LastModifiedBy { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public virtual DateTime DeletedAt { get; set; }
+        public virtual int DeletedBy { get; set; }
+
+        protected AuditableBaseEntity()
+        {
+            CreatedAt = DateTime.UtcNow;
+            LastModifiedAt = DateTime.UtcNow;
+            IsDeleted = false;
+        }
     }
 }

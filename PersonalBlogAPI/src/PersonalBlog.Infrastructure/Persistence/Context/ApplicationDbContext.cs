@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PersonalBlog.Domain.Abstractions;
+using PersonalBlog.Domain.Common;
 using PersonalBlog.Domain.Entities;
 
 namespace PersonalBlog.Infrastructure.Persistence.Context

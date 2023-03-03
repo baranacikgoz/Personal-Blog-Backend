@@ -1,11 +1,12 @@
-﻿using PersonalBlog.Domain.Abstractions;
+﻿using PersonalBlog.Domain.Common;
 
-namespace PersonalBlog.Domain.Entities;
-
-public class ArticleTag : AuditableBaseEntity
+namespace PersonalBlog.Domain.Entities
 {
-    public int ArticleId { get; set; }
-    public Article Article { get; set; } = null!;
-    public int TagId { get; set; }
-    public Tag Tag { get; set; } = null!;
+    public class ArticleTag : AuditableBaseEntity
+    {
+        public int ArticleId { get; set; }
+        public Article Article { get; set; } = null!;
+        public int TagId { get; set; }
+        public Tag Tag { get; set; } = null!;
+    }
 }
