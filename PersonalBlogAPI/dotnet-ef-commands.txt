@@ -1,1 +1,3 @@
 dotnet ef migrations add <NameOfMigration> --startup-project .\src.\PersonalBlog.WebAPI\ --project \src.\PersonalBlog.Infrastructure\ --context ApplicationDbContext -o Persistence\Migrations\ --verbose
+
+dotnet ef database update --project .\src\PersonalBlog.Infrastructure\ --startup-project .\src\PersonalBlog.WebAPI\ --context ApplicationDbContext
