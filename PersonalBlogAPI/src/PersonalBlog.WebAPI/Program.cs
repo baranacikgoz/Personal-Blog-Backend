@@ -39,6 +39,14 @@ try
 
     _ = app.MapControllers();
 
+    if (app.Environment.IsDevelopment())
+    {
+        // Vs code is reading 'Now listening on: ...' on the console to launch the browser.
+        // So we need to log it.
+        string appUrl = builder.Configuration.GetValue<string>("LaunchUrl")!;
+        Log.Information("Now listening on: {appUrl}", appUrl);
+    }
+
     app.Run();
 }
 catch (Exception ex)
