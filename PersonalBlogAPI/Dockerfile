@@ -6,11 +6,10 @@ WORKDIR /app
 
 # Copy the .csproj files and restore dependencies
 COPY *.sln .
-COPY src/PersonalBlog.Domain/*.csproj ./src/PersonalBlog.Domain/
-COPY src/PersonalBlog.Application/*.csproj ./src/PersonalBlog.Application/
-COPY src/PersonalBlog.Infrastructure/*.csproj ./src/PersonalBlog.Infrastructure/
-COPY src/PersonalBlog.WebAPI/*.csproj ./src/PersonalBlog.WebAPI/
-RUN dotnet restore
+COPY src/Domain/*.csproj ./src/Domain/
+COPY src/Application/*.csproj ./src/Application/
+COPY src/Infrastructure/*.csproj ./src/Infrastructure/
+COPY src/WebAPI/*.csproj ./src/WebAPI/
 
 # Copy the remaining source code and build the application
 COPY . ./
@@ -26,4 +25,4 @@ WORKDIR /app
 COPY --from=build-env /app/out .
 
 # Set the entry point to run the Web API DLL file
-ENTRYPOINT ["dotnet", "PersonalBlog.WebAPI.dll"]
+ENTRYPOINT ["dotnet", "WebAPI.dll"]
