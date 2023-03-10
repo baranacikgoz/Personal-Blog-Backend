@@ -95,8 +95,7 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
                     response = BaseResponse<object>.FromFailure(
                         new List<string> {
                              @"
-                             The entity you are trying to create has some fields that must be unique.
-                             An entity with the same values for these fields may already exist.
+                             A record with the same value(s) already exists.
                              "}
                              );
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
