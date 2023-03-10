@@ -88,7 +88,10 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
 
                     break;
 
-                case DbUpdateException _: // Occurs when a unique index is violated
+                case DbUpdateException _:
+                    // Occurs when a unique index is violated
+
+                    // This exception should not be thrown because uniqueness of the values should be checked at validators.
                     response = BaseResponse<object>.FromFailure(
                         new List<string> {
                              @"
