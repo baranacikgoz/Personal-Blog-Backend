@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Application.Interfaces;
 using Application.Interfaces.Repository.Common;
 using Domain.Abstractions;
 using Infrastructure.Persistence.Context;
@@ -9,22 +8,17 @@ namespace Infrastructure.Persistence.Repositories.Common
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHashIdService _hashIdService;
 
         public GenericRepository(
-            ApplicationDbContext context,
-            IHashIdService hashIdService
+            ApplicationDbContext context
             )
         {
             _context = context;
-            _hashIdService = hashIdService;
         }
 
         public virtual async Task<T> AddAsync(T entity, CancellationToken cancellationToken)
         {
             _ = await _context.Set<T>().AddAsync(entity, cancellationToken);
-
-            entity.HashId = _hashIdService.Encode(entity.Id);
 
             _ = await _context.SaveChangesAsync(cancellationToken);
 

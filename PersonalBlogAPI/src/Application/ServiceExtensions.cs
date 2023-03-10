@@ -31,7 +31,7 @@ namespace Application
         {
             IHashIdService hashIdService = app.ApplicationServices.GetRequiredService<IHashIdService>();
 
-            MapsterProfile.AddConfigs();
+            MapsterProfile.AddConfigs(hashIdService);
 
             return app;
         }

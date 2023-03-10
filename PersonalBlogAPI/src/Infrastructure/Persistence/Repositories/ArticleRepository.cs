@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Application.Interfaces;
 using Application.Interfaces.Repository.ReadRepositories;
 using Domain.Entities;
 using Infrastructure.Persistence.Context;
@@ -11,7 +10,7 @@ namespace Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public ArticleRepository(ApplicationDbContext context, IHashIdService hashIdService) : base(context, hashIdService)
+        public ArticleRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
