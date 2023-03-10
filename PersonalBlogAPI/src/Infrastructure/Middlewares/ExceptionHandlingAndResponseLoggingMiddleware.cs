@@ -11,6 +11,7 @@ using Serilog;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Middlewares;
 
@@ -84,6 +85,18 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
                 case NoResultException _: // From HashIdService
                     response = BaseResponse<object>.FromFailure(new List<string> { "Invalid Id." });
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+                    break;
+
+                case DbUpdateException _: // Occurs when a unique index is violated
+                    response = BaseResponse<object>.FromFailure(
+                        new List<string> {
+                             @"
+                             The entity you are trying to create has some fields that must be unique.
+                             An entity with the same values for these fields may already exist.
+                             "}
+                             );
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
                     break;
 
