@@ -6,42 +6,43 @@ using Application.Interfaces.Repository;
 using Application.Wrappers;
 using Domain.Entities;
 
-namespace Application.Features.Tags.Commands;
-
-public sealed record CreateTagCommand(string Name) : ICommand<BaseResponse<string>>;
-
-public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
+namespace Application.Features.Tags.Commands
 {
-    public CreateTagCommandValidator(ITagRepository tagRepository)
-    {
-        RuleFor(request => request.Name)
-            .NotEmpty()
-            .WithMessage("{PropertyName} is required.")
-            .MaximumLength(Tag.NameMaxLength)
-            .WithMessage("{PropertyName} must be {MaxLength} characters or less.")
-            .MustAsync(async (name, cancellationToken) => !await tagRepository.ValueForThatFieldExistsAsync(name, nameof(Tag.Name), cancellationToken))
-            .WithMessage("{PropertyName} already exists.");
-    }
-}
+    public sealed record CreateTagCommand(string Name) : ICommand<BaseResponse<string>>;
 
-internal sealed class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, BaseResponse<string>>
-{
-    private readonly ITagRepository _tagRepository;
-    private readonly IHashIdService _hashIdService;
-
-    public CreateTagCommandHandler(ITagRepository tagRepository, IHashIdService hashIdService)
+    public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
     {
-        _tagRepository = tagRepository;
-        _hashIdService = hashIdService;
+        public CreateTagCommandValidator(ITagRepository tagRepository)
+        {
+            _ = RuleFor(request => request.Name)
+                .NotEmpty()
+                .WithMessage("{PropertyName} is required.")
+                .MaximumLength(Tag.NameMaxLength)
+                .WithMessage("{PropertyName} must be {MaxLength} characters or less.")
+                .MustAsync(async (name, cancellationToken) => !await tagRepository.ValueForThatFieldExistsAsync(name, nameof(Tag.Name), cancellationToken))
+                .WithMessage("{PropertyName} already exists.");
+        }
     }
 
-    public async Task<BaseResponse<string>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
+    internal sealed class CreateTagCommandHandler : ICommandHandler<CreateTagCommand, BaseResponse<string>>
     {
-        var result = request.Adapt<Tag>();
+        private readonly ITagRepository _tagRepository;
+        private readonly IHashIdService _hashIdService;
 
-        await _tagRepository.AddAsync(result, cancellationToken);
+        public CreateTagCommandHandler(ITagRepository tagRepository, IHashIdService hashIdService)
+        {
+            _tagRepository = tagRepository;
+            _hashIdService = hashIdService;
+        }
 
-        string hashedId = _hashIdService.Encode(result.Id);
-        return BaseResponse<string>.FromSuccess(hashedId);
+        public async Task<BaseResponse<string>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
+        {
+            Tag tag = request.Adapt<Tag>();
+
+            _ = await _tagRepository.AddAsync(tag, cancellationToken);
+
+            string hashedId = _hashIdService.Encode(tag.Id);
+            return BaseResponse<string>.FromSuccess(hashedId);
+        }
     }
 }
