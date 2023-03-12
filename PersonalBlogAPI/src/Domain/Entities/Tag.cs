@@ -10,7 +10,7 @@ namespace Domain.Entities
 
         [Required]
         [MaxLength(NameMaxLength)]
-        public string Name { get; set; } = null!;
+        public required string Name { get; set; } = null!;
 
         public virtual ICollection<ArticleTag> ArticleTags { get; set; } = new Collection<ArticleTag>();
     }

@@ -13,12 +13,12 @@ namespace Domain.Entities
         [Required]
         [MaxLength(TitleMaxLength)]
         [Column(nameof(Title))]
-        public string Title { get; set; } = null!;
+        public required string Title { get; set; } = null!;
 
         [Required]
         [MaxLength(ContentMaxLength)]
         [Column(nameof(Content))]
-        public string Content { get; set; } = null!;
+        public required string Content { get; set; } = null!;
 
         public virtual ICollection<ArticleTag> ArticleTags { get; set; } = new Collection<ArticleTag>();
     }
