@@ -14,11 +14,6 @@ public class ApplicationDbContext : DbContext
         _configuration = configuration;
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(_configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb"));
-        base.OnConfiguring(optionsBuilder);
-    }
     public DbSet<Article> Articles => Set<Article>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<ArticleTag> ArticleTags => Set<ArticleTag>();

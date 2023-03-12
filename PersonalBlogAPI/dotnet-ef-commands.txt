@@ -1,3 +1,10 @@
-dotnet ef migrations add InitialMigration --startup-project .\PersonalBlogAPI\src\WebAPI\ --project .\PersonalBlogAPI\src\Infrastructure\ --context ApplicationDbContext -o Persistence\Migrations\ --verbose
+
+-- application database--
+dotnet ef migrations add <migrationName> --startup-project .\PersonalBlogAPI\src\WebAPI\ --project .\PersonalBlogAPI\src\Infrastructure\ --context ApplicationDbContext -o Persistence\Migrations\ --verbose
 
 dotnet ef database update --startup-project .\PersonalBlogAPI\src\WebAPI\ --project .\PersonalBlogAPI\src\Infrastructure\ --context ApplicationDbContext
+
+-- identity database--
+dotnet ef migrations add <migrationName> --startup-project .\PersonalBlogAPI\src\WebAPI\ --project .\PersonalBlogAPI\src\Identity\ --context IdentityContext -o Persistence\Migrations\ --verbose
+
+dotnet ef database update --startup-project .\PersonalBlogAPI\src\WebAPI\ --project .\PersonalBlogAPI\src\Identity\ --context IdentityContext

@@ -3,6 +3,7 @@ using Infrastructure;
 using WebAPI;
 using Serilog;
 using SwaggerHierarchySupport;
+using Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ try
     _ = builder.Services
         .AddApplication()
         .AddInfrastructure(builder.Configuration)
+        .AddIdentityProject(builder.Configuration)
         .AddCustomSwaggerGen()
         .AddRedisOutputCaching(builder.Configuration);
 
@@ -45,7 +47,7 @@ try
 
     if (app.Environment.IsDevelopment())
     {
-        // Vs code is reading 'Now listening on: ...' on the console to launch the browser.
+        // Vs code is reading 'Now listening on: ...' from the console to launch the browser.
         // So we need to log it.
         string appUrl = builder.Configuration.GetValue<string>("LaunchUrl")!;
         Log.Information("Now listening on: {appUrl}", appUrl);

@@ -21,11 +21,13 @@ public static class ServiceExtensions
     {
         Log.Information("Adding infrastructure services.");
 
-        string? connectionString = configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb");
+        string? connectionString = configuration.GetValue<string>("ConnectionStrings:ApplicationDb");
 
         _ = services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString)
             );
+
+        _ = services.MigrateApplicationDatabase();
 
         _ = services.AddStackExchangeRedisCache(options =>
         {
@@ -36,8 +38,6 @@ public static class ServiceExtensions
         _ = services.AddTransient<IHashIdService, HashIdService>();
 
         _ = services.AddSingleton<IRepositoryCacheService, RepositoryCacheService>();
-
-        _ = services.MigrateDatabase();
 
         _ = services.AddScoped<IArticleRepository, ArticleRepository>();
         _ = services.AddScoped<ITagRepository, TagRepository>();
@@ -53,16 +53,16 @@ public static class ServiceExtensions
         return app;
     }
 
-    internal static IServiceCollection MigrateDatabase(this IServiceCollection services)
+    internal static IServiceCollection MigrateApplicationDatabase(this IServiceCollection services)
     {
-        Log.Information("Migrating PostgreSQL database.");
+        Log.Information("Migrating Application database.");
 
         using IServiceScope serviceScope = services.BuildServiceProvider().CreateScope();
         using ApplicationDbContext context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         context.Database.Migrate();
 
-        Log.Information("Done database migration.");
+        Log.Information("Done application database migration.");
         return services;
     }
 }
