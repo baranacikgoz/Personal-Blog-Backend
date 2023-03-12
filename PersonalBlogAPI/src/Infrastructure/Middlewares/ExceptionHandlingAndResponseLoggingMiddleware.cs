@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Application.Extensions;
 
 namespace Infrastructure.Middlewares;
 
@@ -62,7 +63,7 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
             await _next(context);
             elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
-            LogResponse(context, elapsedMilliseconds);
+            _logger.LogHttpSuccess(context, elapsedMilliseconds);
         }
         catch (Exception exception)
         {
@@ -119,28 +120,13 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
                     break;
             }
 
-            LogErrorWithRequestInfo(context, requestBodyOrQueryString, elapsedMilliseconds);
+            _logger.LogHttpErrorWithRequestInfo(context, requestBodyOrQueryString, elapsedMilliseconds);
+
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
         finally
         {
             _timer.Reset();
         }
-    }
-
-    private static void LogResponse(HttpContext context, long elapsedMilliseconds)
-    {
-        if (elapsedMilliseconds > 2000)
-        {
-            Log.Warning("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms", context.Request.Method, context.Request.Path, context.Response.StatusCode, elapsedMilliseconds);
-            return;
-        }
-
-        Log.Information("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms", context.Request.Method, context.Request.Path, context.Response.StatusCode, elapsedMilliseconds);
-    }
-
-    private static void LogErrorWithRequestInfo(HttpContext context, string requestBodyOrQueryString, long elapsedMilliseconds)
-    {
-        Log.Error("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms for {RequestBodyOrQueryString}", context.Request.Method, context.Request.Path, context.Response.StatusCode, elapsedMilliseconds, requestBodyOrQueryString);
     }
 }
