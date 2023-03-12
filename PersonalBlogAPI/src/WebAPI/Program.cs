@@ -1,6 +1,6 @@
-using  Application;
-using  Infrastructure;
-using  WebAPI;
+using Application;
+using Infrastructure;
+using WebAPI;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,7 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-    _ = builder.Host.UseSerilog(Log.Logger);
+    _ = builder.Host.UseCustomSerilog();
 
     Log.Information("Starting web host.");
 
@@ -31,7 +31,8 @@ try
 
     WebApplication app = builder.Build();
 
-    _ = app.UseExceptionHandlingAndResponseLoggingMiddleware()
+    _ = app
+    .UseExceptionHandlingAndResponseLoggingMiddleware()
        .UseOutputCache()
        .AddMapsterConfigs()
        .UseSwagger()

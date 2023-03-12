@@ -13,57 +13,56 @@ using Infrastructure.Persistence.Repositories;
 using Infrastructure.Shared;
 using Serilog;
 
-namespace Infrastructure
+namespace Infrastructure;
+
+public static class ServiceExtensions
 {
-    public static class ServiceExtensions
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        Log.Information("Adding infrastructure services.");
+
+        string? connectionString = configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb");
+
+        _ = services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(connectionString)
+            );
+
+        _ = services.AddStackExchangeRedisCache(options =>
         {
-            Log.Information("Adding infrastructure services.");
+            options.Configuration = configuration.GetValue<string>("ConnectionStrings:RedisInnerCache");
+            options.InstanceName = "PersonalBlog_";
+        });
 
-            string? connectionString = configuration.GetValue<string>("ConnectionStrings:PersonalBlogDb");
+        _ = services.AddTransient<IHashIdService, HashIdService>();
 
-            _ = services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(connectionString)
-                );
+        _ = services.AddSingleton<IRepositoryCacheService, RepositoryCacheService>();
 
-            _ = services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = configuration.GetValue<string>("ConnectionStrings:RedisInnerCache");
-                options.InstanceName = "PersonalBlog_";
-            });
+        _ = services.MigrateDatabase();
 
-            _ = services.AddTransient<IHashIdService, HashIdService>();
+        _ = services.AddScoped<IArticleRepository, ArticleRepository>();
+        _ = services.AddScoped<ITagRepository, TagRepository>();
 
-            _ = services.AddSingleton<IRepositoryCacheService, RepositoryCacheService>();
+        Log.Information("Done adding infrastructure services.");
+        return services;
+    }
 
-            _ = services.MigrateDatabase();
+    public static IApplicationBuilder UseExceptionHandlingAndResponseLoggingMiddleware(this IApplicationBuilder app)
+    {
+        _ = app.UseMiddleware<ExceptionHandlingAndResponseLoggingMiddleware>();
 
-            _ = services.AddScoped<IArticleRepository, ArticleRepository>();
-            _ = services.AddScoped<ITagRepository, TagRepository>();
+        return app;
+    }
 
-            Log.Information("Done adding infrastructure services.");
-            return services;
-        }
+    internal static IServiceCollection MigrateDatabase(this IServiceCollection services)
+    {
+        Log.Information("Migrating PostgreSQL database.");
 
-        public static IApplicationBuilder UseExceptionHandlingAndResponseLoggingMiddleware(this IApplicationBuilder app)
-        {
-            _ = app.UseMiddleware<ExceptionHandlingAndResponseLoggingMiddleware>();
+        using IServiceScope serviceScope = services.BuildServiceProvider().CreateScope();
+        using ApplicationDbContext context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            return app;
-        }
+        context.Database.Migrate();
 
-        internal static IServiceCollection MigrateDatabase(this IServiceCollection services)
-        {
-            Log.Information("Migrating PostgreSQL database.");
-
-            using IServiceScope serviceScope = services.BuildServiceProvider().CreateScope();
-            using ApplicationDbContext context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            context.Database.Migrate();
-
-            Log.Information("Done database migration.");
-            return services;
-        }
+        Log.Information("Done database migration.");
+        return services;
     }
 }

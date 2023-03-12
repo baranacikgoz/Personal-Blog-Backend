@@ -1,9 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+# pragma warning disable IDE0161
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
@@ -12,7 +13,7 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "Articles",
                 columns: table => new
                 {
@@ -29,12 +30,9 @@ namespace Infrastructure.Persistence.Migrations
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeletedBy = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Articles", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Articles", x => x.Id));
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -50,12 +48,9 @@ namespace Infrastructure.Persistence.Migrations
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeletedBy = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
-                });
+                constraints: table => table.PrimaryKey("PK_Tags", x => x.Id));
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "ArticleTags",
                 columns: table => new
                 {
@@ -73,14 +68,14 @@ namespace Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArticleTags", x => new { x.ArticleId, x.TagId });
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("PK_ArticleTags", x => new { x.ArticleId, x.TagId });
+                    _ = table.ForeignKey(
                         name: "FK_ArticleTags_Articles_ArticleId",
                         column: x => x.ArticleId,
                         principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
+                    _ = table.ForeignKey(
                         name: "FK_ArticleTags_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
@@ -88,18 +83,18 @@ namespace Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_Articles_Title",
                 table: "Articles",
                 column: "Title",
                 unique: true);
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_ArticleTags_TagId",
                 table: "ArticleTags",
                 column: "TagId");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_Tags_Name",
                 table: "Tags",
                 column: "Name",
@@ -109,13 +104,13 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "ArticleTags");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "Articles");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "Tags");
         }
     }

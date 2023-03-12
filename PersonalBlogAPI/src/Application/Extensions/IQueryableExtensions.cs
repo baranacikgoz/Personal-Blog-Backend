@@ -6,12 +6,7 @@ public static class IQueryableExtensions
 {
     public static IQueryable<T> WhereIf<T>(this IQueryable<T> queryable, bool condition, Expression<Func<T, bool>> predicate)
     {
-        if (condition)
-        {
-            return queryable.Where(predicate);
-        }
-
-        return queryable;
+        return condition ? queryable.Where(predicate) : queryable;
     }
 
     //public static IQueryable<T> OrderBy<T>(this IQueryable<T> source, string orderByProperty, bool desc)

@@ -2,6 +2,7 @@
 
 #nullable disable
 
+# pragma warning disable IDE0161
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
@@ -10,15 +11,15 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            _ = migrationBuilder.DropColumn(
                 name: "HashId",
                 table: "Tags");
 
-            migrationBuilder.DropColumn(
+            _ = migrationBuilder.DropColumn(
                 name: "HashId",
                 table: "ArticleTags");
 
-            migrationBuilder.DropColumn(
+            _ = migrationBuilder.DropColumn(
                 name: "HashId",
                 table: "Articles");
         }
@@ -26,21 +27,21 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            _ = migrationBuilder.AddColumn<string>(
                 name: "HashId",
                 table: "Tags",
                 type: "character varying(12)",
                 maxLength: 12,
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
+            _ = migrationBuilder.AddColumn<string>(
                 name: "HashId",
                 table: "ArticleTags",
                 type: "character varying(12)",
                 maxLength: 12,
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
+            _ = migrationBuilder.AddColumn<string>(
                 name: "HashId",
                 table: "Articles",
                 type: "character varying(12)",

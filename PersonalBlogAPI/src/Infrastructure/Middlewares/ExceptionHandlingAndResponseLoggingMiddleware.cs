@@ -19,12 +19,18 @@ public class ExceptionHandlingAndResponseLoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IWebHostEnvironment _env;
+    private readonly ILogger _logger;
     private readonly Stopwatch _timer;
 
-    public ExceptionHandlingAndResponseLoggingMiddleware(RequestDelegate next, IWebHostEnvironment env)
+    public ExceptionHandlingAndResponseLoggingMiddleware(
+        RequestDelegate next,
+        IWebHostEnvironment env,
+        ILogger logger
+        )
     {
         _next = next;
         _env = env;
+        _logger = logger;
         _timer = new Stopwatch();
     }
 
