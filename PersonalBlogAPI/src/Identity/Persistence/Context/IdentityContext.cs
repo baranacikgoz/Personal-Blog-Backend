@@ -1,5 +1,6 @@
 using Infrastructure.Identity;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,25 @@ public class IdentityContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        _ = builder.HasDefaultSchema("Identity");
+        _ = builder.Entity<ApplicationUser>()
+            .ToTable("Users");
+
+        _ = builder.Entity<IdentityRole>()
+            .ToTable("Roles");
+
+        _ = builder.Entity<IdentityUserClaim<string>>()
+            .ToTable("UserClaims");
+
+        _ = builder.Entity<IdentityUserRole<string>>()
+            .ToTable("UserRoles");
+
+        _ = builder.Entity<IdentityUserLogin<string>>()
+            .ToTable("UserLogins");
+
+        _ = builder.Entity<IdentityRoleClaim<string>>()
+            .ToTable("RoleClaims");
+
+        _ = builder.Entity<IdentityUserToken<string>>()
+            .ToTable("UserTokens");
     }
 }
