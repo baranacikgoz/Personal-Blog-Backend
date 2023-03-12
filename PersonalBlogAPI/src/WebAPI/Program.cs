@@ -2,6 +2,7 @@ using Application;
 using Infrastructure;
 using WebAPI;
 using Serilog;
+using SwaggerHierarchySupport;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +37,9 @@ try
        .UseOutputCache()
        .AddMapsterConfigs()
        .UseSwagger()
-       .UseSwaggerUI();
+       .UseSwaggerUI(
+        opt => opt.AddHierarchySupport()
+       );
 
     _ = app.MapControllers();
 
